@@ -231,32 +231,3 @@ unsafe fn write_process_memory(
 
     Ok(())
 }
-
-pub(crate) unsafe fn inject_dll_load_library(
-    deferred: &mut Deferred,
-    h_process: HANDLE,
-    filename: &str,
-) -> Result<()> {
-    // make sure zero terminated
-    let mut filename = filename.to_string();
-    filename.push('\0');
-
-    assert!(filename.len() < 0x1000);
-    let buf = virtual_alloc_ex(deferred, h_process, 0x1000, PAGE_READWRITE)?;
-
-    write_process_memory(h_process, filename.as_ptr() as _, buf, filename.len())?;
-
-    let kernel32 = GetModuleHandleA("kernel32.dll\0".as_ptr() as _);
-    if kernel32.is_null() {
-        return Err(Error::GetModuleHandle(GetLastError()));
-    }
-
-    let load_library = GetProcAddress(kernel32, "LoadLibraryA\0".as_ptr() as _);
-    if load_library.is_null() {
-        return Err(Error::GetProcAddress(GetLastError()));
-    }
-
-    create_remote_thread_and_wait(deferred, h_process, load_library as _, buf)?;
-
-    Ok(())
-}

@@ -13,4 +13,4 @@ keywords = ["dll", "injection", "hooking", "detour"]
 exe = "0.4"
 iced-x86 = { version = "1", features = ["code_asm"] }
 thiserror = "1"
-winapi = { version = "0.3", features = ["processthreadsapi", "winnt", "minwindef", "errhandlingapi", "handleapi", "memoryapi", "libloaderapi", "synchapi", "winbase"] }
+winapi = { version = "0.3.9", features = ["processthreadsapi", "winnt", "minwindef", "errhandlingapi", "handleapi", "memoryapi", "libloaderapi", "synchapi", "winbase"] }
